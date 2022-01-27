@@ -1,0 +1,52 @@
+---
+layout: post
+title:  "Model-Based Difficulty Estimation of Indoor Bouldering Routes"
+date:   2022-01-27 14:17:00 +0100
+categories: jekyll update
+---
+## Introduction
+
+Indoor bouldering is a sport where a climber is tasked to go up or across a wall with the aid of plastic shapes, called holds, as support. These holds are bolted or screwed onto plywood walls. A group of these holds is called a route, where one or two holds are marked as the start, and a single hold is marked as the end. These routes are created by experience climbers and are called route setters. Once a route is created by the route setters, it is given a grade. Grading a router can be rather subjective, as every climber judges the difficulty of a route differently. This thesis tries to objectify the grading of a route by using the information extracted from bouldering routes to predict the grade of a bouldering route.
+
+![Example of a bouldering wall](/assets/RouteExample.png)
+
+## Data acquisition
+
+Previous research that tried to predict indoor bouldering routes, mainly used the standardised training wall called the Moonboard, as there is huge database of ready-made routes available on the internet. Therefore, our thesis’ first contribution is a novel data collection method for actual indoor bouldering routes.  This data is broken down into two categories, wall data and hold data.
+
+## Wall data
+
+- Wall vertices. The position of the vertices of each wall panel.
+- Bolt holes. The relative position of three bolt holes from one of the wall vertices, along an edge and perpendicular to that edge.
+Hold data
+-	Position. The position of the hold on the grid of bolt holes. If the hold is not bolted onto one of the holes, an offset to the closest hole is measured.
+-	Type. A rough categorisation of the hold type into one of five most common hold types, i.e. jug, crimp, sloper, pocket, pinch.
+-	Surface angle. The angle of the hold on the wall. The angle is measured to the holdable surface, which is the surface the hand or foot is placed on.
+-	Surface distance. The distance to the holdable surface measured from the centre of the bolt hole.
+
+## Models
+
+In total three models were created. One as a baseline and as a basis for two other models that extend the baseline model in two different aspects. The model was created in four steps.
+
+- Stance creation. A stance is the 4 holds that the hands and feet are attached to. The first step in our model is to create such a stance for each permutation of holds.
+- Stance pruning. Not all stances are realistic, so some stances are removed if they are deemed infeasible.
+- Graph creation. The model is implemented as a graph, where each node is a stance and two nodes are connected if and only if all of the holds are in range of each other.
+- Cost calculation. For each node and edge a cost is calculated using a set of hand crafted cost functions. Each cost function captures a different aspect of the best practice used when climbing up a route.
+
+Once we have the stance graph, we can calculate a least-cost path up a bouldering route. The total cost of the path is used as the difficulty of the route. This means that a higher cost means a higher difficulty.
+
+## Results
+
+The baseline model was able to correctly predict the order of a pair of routes ~65% of the time. Looking at the visual output of the path taken, however, shows some unrealistic behaviour, for example unnecessarily climbing upside down. 
+
+![Example of a bouldering wall](/assets/UpsideDown.jpg)
+![Example of a bouldering wall](/assets/NotUpsideDown.jpg)
+
+
+The climber extension added costs to this kind of behaviour, which removed these unrealistic moves. However, this increase in realism did not improve the predictive ability of the model. Adding hold properties, however, did increase the predictive ability of the model to around 75%.
+
+
+## Conclusion
+
+We have introduced a novel way to measure bouldering routes and digitize it to a format different models could use. We also introduced three different models that used this data to estimate the difficulty of indoor bouldering routes. The model that incorporated the hold information was able to accurately predict the order of a pair of routes 75% of the time.
+Future work could look at accelerating the data acquisition step by automating the currently manual process. An increased amount of data could also allow different models, such as machine learning models, which were infeasible due to the limited amount of data collected.
