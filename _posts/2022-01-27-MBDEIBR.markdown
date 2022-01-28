@@ -4,8 +4,7 @@ date:   2022-01-27 14:17:00 +0100
 categories: jekyll update
 ---
 
-[Thesis](https://github.com/resul4e/MasterThesis/raw/master/Resul_Celik_Thesis_Final.pdf) 
-{: text-align: center;"}
+This website is a summary of my Game and Media Technology [Master's thesis](https://github.com/resul4e/MasterThesis/raw/master/Resul_Celik_Thesis_Final.pdf).
 
 ## Bouldering
 
@@ -40,7 +39,7 @@ In total three models were created. One as a baseline and as a basis for two oth
 - **Graph creation**. The model is implemented as a graph, where each node is a stance and two nodes are connected if and only if all of the holds are in range of each other.
 - **Cost calculation**. For each node and edge a cost is calculated using a set of hand crafted cost functions. Each cost function captures a different aspect of the best practice used when climbing up a route.
 
-Once we have the stance graph, we can calculate a least-cost path up a bouldering route. The total cost of the path is used as the difficulty of the route. Therefore a higher cost means a higher difficulty.
+Once we have the stance graph, we can calculate a least-cost path up a bouldering route. The total cost of the path is used as the difficulty of the route. Therefore a higher cost means a higher difficulty. To compare the resulting difficulty scores, the scores for each pair of routes are compared, the results are deemed to be correct when the order of the scores match the order of the route setter given grade.
 
 ### Climber extension
 
@@ -48,7 +47,7 @@ The two extensions add additional cost functions to augment the baseline model. 
 
 ### Hold extension
 
-The hold extension adds 
+The hold extension uses the additional information captured from the holds to augment the baseline model. Each hold type is given a different weight and added as a cost to the cost function. The hold angle and hold distance are used to improve the path the model outputs. As some holds can have a diameter of around a meter, the centre of a hold could be erroneous approximation. Therefore the surface distance is used as the radius of a sphere centred around the position of the hold.
 
 ## Results
 
