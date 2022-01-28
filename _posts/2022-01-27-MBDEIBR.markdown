@@ -4,23 +4,23 @@ date:   2022-01-27 14:17:00 +0100
 categories: jekyll update
 ---
 
-This website is a summary of my Game and Media Technology [Master's thesis](https://github.com/resul4e/MasterThesis/raw/master/Resul_Celik_Thesis_Final.pdf).
+This website is a summary of my Game and Media Technology [Master's thesis](https://github.com/resul4e/MasterThesis/raw/master/Resul_Celik_Thesis_Final.pdf). For more information please follow the link for the full research.
 
 ## Bouldering
 
-Indoor bouldering is a sport where a climber is tasked to go up or across a wall with the aid of plastic shapes, called holds, as support. These holds are bolted or screwed onto plywood walls. A group of these holds is called a route, where one or two holds are marked as the start, and a single hold is marked as the end. These routes are created by experienced climbers called route setters. Once a route is created by the route setters, it is given a grade, which is an indication of the difficulty of a route. Grading can be rather subjective, as every climber judges the difficulty of a route differently. This thesis tries to objectify the grading of a route by using the information extracted from bouldering routes to predict the grade of a route.
+Indoor bouldering is a sport where a climber is tasked to go up or across a wall with the aid of plastic shapes, called holds, as support. These holds are bolted or screwed onto plywood walls. A group of these holds is called a route, where one or two holds are marked as the start and a single hold is marked as the end. These routes are created by experienced climbers called route setters. Once a route is created by the route setters, it is given a grade, which is an indication of the difficulty of a route. Grading can be rather subjective, as every climber judges the difficulty of a route differently. This thesis tries to objectify the grading of a route by using the information extracted from bouldering routes to predict the difficulty of a route.
 
 ![Example of a bouldering wall](/assets/RouteExample.png)
 
-In the image above you can see an example of a bouldering route. Starting at the hold marked with the green circle and ending at the hold marked with the orange circle.
+In the image above you can see an example of a bouldering route, The start and end holds are marked with a green and orange circle respectively.
 
 ## Data acquisition
 
-Previous research that tried to predict indoor bouldering routes, mainly used the standardised training wall called the Moonboard, due to the ease of extracting a large number of ready-made routes from the Moonboard app. Therefore, our thesis’ first contribution is a novel data collection method for actual indoor bouldering routes.  This data is broken down into two categories, wall data and hold data.
+Previous research that tried to predict indoor bouldering routes, mainly used the standardised training wall called the Moonboard due to the ease of extracting a large number of ready-made routes from the Moonboard app. Therefore, our thesis’ first contribution is a novel data collection method for actual indoor bouldering routes. This data is broken down into two categories, wall data and hold data.
 
 ### Wall data
 
-- **Wall vertices**. The position of the vertices of each wall panel. Which were extracted from a 3D model of the climbing gym.
+- **Wall vertices**. The position of the vertices of each wall panel. These were extracted from a 3D model of the climbing gym.
 - **Anchor holes**. The relative position of three bolt holes from one of the wall vertices, along an edge and perpendicular to that edge. All other bolt holes can be calculated from the distances between these three anchor holes.
 
 ### Hold data
@@ -32,22 +32,21 @@ Previous research that tried to predict indoor bouldering routes, mainly used th
 
 ## Models
 
-In total three models were created. One as a baseline and as a basis for two other models that extend the baseline model in two different aspects. The model was created in four steps.
+In total three models were created. One as a baseline and as a basis for two other models that extend the baseline model in two different aspects. The models were created in four steps.
 
-- **Stance creation**. A stance is the 4 holds that the hands and feet are attached to. The first step in our model is to create such a stance for each permutation of holds.
-- **Stance pruning**. Not all stances are realistic, so some stances are removed if they are deemed infeasible.
+- **Stance creation**. A stance is a collection of the 4 holds that the hands and feet are attached to. The first step in our model is to create such a stance for each permutation of holds.
+- **Stance pruning**. Not all stances are realistic, so some stances are removed if the distances between the four holds are too far apart.
 - **Graph creation**. The model is implemented as a graph, where each node is a stance and two nodes are connected if and only if all of the holds are in range of each other.
-- **Cost calculation**. For each node and edge a cost is calculated using a set of hand crafted cost functions. Each cost function captures a different aspect of the best practice used when climbing up a route.
+- **Cost calculation**. For each node and edge a cost is calculated using a set of hand crafted cost functions. Each cost function captures a different aspect of the best practices used when climbing up a route.
 
 Once we have the stance graph, we can calculate a least-cost path up a bouldering route. The total cost of the path is used as the difficulty of the route. Therefore a higher cost means a higher difficulty. To compare the resulting difficulty scores, the scores for each pair of routes are compared, the results are deemed to be correct when the order of the scores match the order of the route setter given grade.
 
 ### Climber extension
 
-The two extensions add additional cost functions to augment the baseline model. The climber extension adds cost pertaining to the climber behaviour. For example, the baseline does not differentiate between the hand and the feet. Therefore the cost of climbing upside down was the same as climbing right side up. However, a climber in real life would try to avoid these kinds of strenuous moves. Therefore we added costs to these kinds of moves to dissuade our model from choosing a path that incorporated these kinds of moves.
-
+The two extensions add additional cost functions to augment the baseline model. The climber extension adds cost pertaining to the climber behaviour. For example, the baseline does not differentiate between the hand and the feet. Therefore the cost of climbing upside down was the same as climbing right side up. However, a climber in real life would try to avoid these kinds of strenuous moves. Therefore we added costs to these kinds of moves to dissuade our model from choosing a path that goes upside down.
 ### Hold extension
 
-The hold extension uses the additional information captured from the holds to augment the baseline model. Each hold type is given a different weight and added as a cost to the cost function. The hold angle and hold distance are used to improve the path the model outputs. As some holds can have a diameter of around a meter, the centre of a hold could be erroneous approximation. Therefore the surface distance is used as the radius of a sphere centred around the position of the hold.
+The hold extension uses the additional information captured from the holds to augment the baseline model. Each hold type is given a different weight and added as a cost to the cost function. The hold angle and hold distance are used to improve the path the model outputs. The hold angle makes sure that there is a hold to counteract the force of gravity pulling on the climber. As some holds can have a diameter of around a meter, the centre of a hold could be erroneous approximation. Therefore the surface distance is used as the radius of a sphere centred around the position of the hold.
 
 ## Results
 
@@ -61,5 +60,6 @@ The climber extension added costs to this kind of behaviour, which removed these
 
 ## Conclusion
 
-We have introduced a novel way to measure bouldering routes and digitize it to a format different models could use. We also introduced three different models that used this data to estimate the difficulty of indoor bouldering routes. The model that incorporated the hold information was able to accurately predict the order of a pair of routes 75% of the time.
-Future work could look at accelerating the data acquisition step by automating the currently manual process. An increased amount of data could also allow different models, such as machine learning models, which were infeasible due to the limited amount of data collected.
+We have introduced a novel way to measure bouldering routes and digitize it to a format that could be used to predict the difficulty of a route. We also introduced three different models that used this data to estimate the difficulty of indoor bouldering routes. The model that incorporated the hold information was able to accurately predict the order of a pair of routes 75% of the time.
+
+Future work could look at accelerating the data acquisition step by automating the currently manual process. An increased amount of data could also allow different models, such as machine learning models, which were not considered due to the limited number of routes collected.
